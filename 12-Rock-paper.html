@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html>
+    <title>
+        RPS/tanuj
+    </title>
+    <head>
+        <style>
+            body {
+                background-color: rgb(25, 25, 25);
+                color: white;
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 15px;
+            }
+            .move-icon {
+                height: 80px;
+                width: 80px;
+                padding: 20px;
+            .score {
+                font-size: 16px;
+            }  
+            }
+            .tiles {
+                font-weight: bold;
+                font-size: 20px;
+                margin-bottom: 30px;
+            }
+            .button-click {
+                background-color: transparent;
+                border-radius: 50%;
+                border: 2px solid white;
+                margin-right: 10px;
+                margin-bottom: 30px;
+            }
+            .reset {
+                padding: 7px;
+            }
+            .bg-color {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                background-color: #999;
+            }
+            .sub {
+                background-color: #222;
+                padding: 3rem;
+                border-radius: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class = "bg-color">
+            <diV class = "sub">
+                <p class = "tiles">
+                    Rock Paper Sciccors
+                </p>
+                <button 
+                class = "button-click js-rock";
+                > 
+                <img src="images/rock-emoji.png" class = "move-icon">
+                </button>
+                <button 
+                class="button-click js-paper";
+                >
+                <img src="images/paper-emoji.png" class = "move-icon">
+                </button>
+                <button 
+                class="button-click js-scissors"
+                >
+                    <img src="images/scissors-emoji.png" class = "move-icon" >
+                </button>
+                <p class="result"> </p>
+                <p class = "choice">  </p>
+                <p class = "score"> </p>
+                <button 
+                class = "reset">
+                Reset Score
+                </button>
+            </diV>
+        </div>
+
+        <script>
+            let score = 
+              JSON.parse(localStorage.getItem('score')) || {
+                wins : 0,
+                losses : 0,
+                ties : 0
+              };
+            updateScore();  
+            
+            function updateScore() {
+                document.querySelector('.score').innerHTML =
+                `wines : ${score.wins} ties : ${score.ties} losses : ${score.losses}`;
+            }
+
+            document.querySelector('.js-rock')
+            .addEventListener('click',() => {letPlay('rock',computerChoice());});
+            
+            document.querySelector('.js-paper')
+            .addEventListener('click',() => {letPlay('paper',computerChoice());});
+
+            document.querySelector('.js-scissors')
+            .addEventListener('click', () => {letPlay('scissors',computerChoice());});
+
+            document.querySelector('.reset').addEventListener('click', () => {
+            score.ties = 0;
+            score.wins = 0;
+            score.losses = 0;
+            updateScore();
+            localStorage.setItem('score', JSON.stringify(score));
+            });
+            
+            document.body.addEventListener('keydown',(event) => {
+              if (event.key === 'r') {
+                letPlay('rock',computerChoice());
+              }
+              else if (event.key === 'p') {
+                letPlay('paper',computerChoice());
+              }
+              else if (event.key === 's') {
+                letPlay('scissors',computerChoice());
+              }
+            });
+
+            function computerChoice() {
+                let randomNumber = Math.random();
+                let computerMove = '';
+                if (randomNumber >= 0 && randomNumber < 1/3) {
+                    computerMove = 'rock';
+                } 
+                else if (randomNumber >= 1/3 && randomNumber < 2/3) {
+                    computerMove = 'paper';
+                }
+                else if (randomNumber >= 2/3 && randomNumber < 1){
+                    computerMove = 'scissors';
+                }
+                return computerMove;
+            }
+            let result = ''
+            function letPlay(yourChoice,computerOption) {
+                if (yourChoice === computerOption){
+                    result = 'You Ties';
+                    score.ties += 1   
+                }
+                else if ((yourChoice === 'rock' && computerOption === 'scissors') ||( yourChoice == 'paper' && computerOption === 'rock') || (yourChoice === 'scissors' && computerOption === 'paper') ) {
+                    result = 'You Won';
+                    score.wins += 1               
+                }
+                else {
+                    result = 'You Lost'
+                    score.losses += 1
+                }
+                updateScore()                
+                document.querySelector('.result').innerHTML = `${result}`;
+                document.querySelector('.choice').innerHTML = `Your move <img src="images/${yourChoice}-emoji.png" class="move-icon">Computer move  <img src="images/${computerOption}-emoji.png" class="move-icon"> `;
+                localStorage.setItem('score',JSON.stringify(score));
+                 
+            }      
+        </script>
+    </body>
+</html>
